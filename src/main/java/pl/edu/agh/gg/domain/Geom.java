@@ -2,11 +2,11 @@ package pl.edu.agh.gg.domain;
 
 import java.util.Objects;
 
-public class Position {
+public class Geom {
     private final int x;
     private final int y;
 
-    public Position(int x, int y) {
+    public Geom(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -23,9 +23,9 @@ public class Position {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Position position = (Position) o;
-        return x == position.x &&
-                y == position.y;
+        Geom geom = (Geom) o;
+        return x == geom.x &&
+                y == geom.y;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class Position {
 
     @Override
     public String toString() {
-        return "Position{" +
+        return "Geom{" +
                 "x=" + x +
                 ", y=" + y +
                 '}';

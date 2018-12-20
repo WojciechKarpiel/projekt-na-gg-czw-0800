@@ -1,7 +1,6 @@
 package pl.edu.agh.gg.productions;
 
-import org.jgrapht.Graph;
-import pl.edu.agh.gg.domain.HaxEdge;
+import pl.edu.agh.gg.HyperGraph;
 import pl.edu.agh.gg.domain.Rgb;
 import pl.edu.agh.gg.domain.VertexLike;
 
@@ -10,9 +9,9 @@ import java.awt.image.BufferedImage;
 
 abstract public class Production {
     private BufferedImage image;
-    private Graph<VertexLike, HaxEdge> graph;
+    private HyperGraph graph;
 
-    public Production(BufferedImage image, Graph<VertexLike, HaxEdge> graph) {
+    public Production(BufferedImage image, HyperGraph graph) {
         this.image = image;
         this.graph = graph;
     }
@@ -26,7 +25,7 @@ abstract public class Production {
         return new Rgb(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    public Graph<VertexLike, HaxEdge> getGraph() {
+    public HyperGraph getGraph() {
         return graph;
     }
 

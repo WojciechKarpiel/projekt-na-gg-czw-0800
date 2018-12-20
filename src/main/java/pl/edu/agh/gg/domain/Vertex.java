@@ -1,17 +1,24 @@
 package pl.edu.agh.gg.domain;
 
 public class Vertex extends VertexLike {
-    private final Position position;
+    private final Geom geom;
     private final Rgb rgb;
+    private Label label;
 
-    public Vertex(Position position, Rgb rgb) {
+    public Vertex(Geom geom, Rgb rgb, Label label) {
         super(EntityType.VERTEX);
-        this.position = position;
+        this.geom = geom;
         this.rgb = rgb;
+        this.label = label;
     }
 
-    public Position getPosition() {
-        return position;
+    public enum Label {
+        V;
+    }
+
+
+    public Geom getGeom() {
+        return geom;
     }
 
     public Rgb getRgb() {
@@ -23,19 +30,19 @@ public class Vertex extends VertexLike {
 //        if (this == o) return true;
 //        if (o == null || getClass() != o.getClass()) return false;
 //        Vertex vertex = (Vertex) o;
-//        return Objects.equals(position, vertex.position) &&
+//        return Objects.equals(geom, vertex.geom) &&
 //                Objects.equals(rgb, vertex.rgb);
 //    }
 //
 //    @Override
 //    public int hashCode() {
-//        return Objects.hash(position, rgb);
+//        return Objects.hash(geom, rgb);
 //    }
 
     @Override
     public String toString() {
         return "Vertex{" +
-                "position=" + position +
+                "geom=" + geom +
                 ", rgb=" + rgb +
                 ", id=" + getId() +
                 '}';

@@ -1,21 +1,27 @@
 package pl.edu.agh.gg.productions;
 
-import org.jgrapht.Graph;
-import pl.edu.agh.gg.domain.*;
+import pl.edu.agh.gg.HyperGraph;
+import pl.edu.agh.gg.domain.Geom;
+import pl.edu.agh.gg.domain.Vertex;
+import pl.edu.agh.gg.domain.VertexLike;
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeB;
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.Optional;
 
 
 public class P1 extends Production {
-    public P1(BufferedImage image, Graph<VertexLike, HaxEdge> graph) {
+    public P1(BufferedImage image, HyperGraph graph) {
         super(image, graph);
     }
 
     @Override
     public void apply(VertexLike center) throws CannotApplyProductionException {
-        Graph<VertexLike, HaxEdge> graph = getGraph();
-        Optional<HyperEdge> sOpt = center.getAsEdge().filter(e -> e.getEdgeType() == HyperEdge.EdgeType.S &&
+        HyperGraph graph = getGraph();
+        Optional<HyperEdge> sOpt = center.getAsEdge().filter(e -> e.getEdgeLabel() == HyperEdge.EdgeLabel.S &&
                 graph.vertexSet().contains(e));
         if (!sOpt.isPresent()) throw new CannotApplyProductionException();
         HyperEdge s = sOpt.get();
@@ -23,39 +29,22 @@ public class P1 extends Production {
         int maxY = getImage().getHeight() - 1;
 
         graph.removeVertex(s);
-        Vertex v1 = new Vertex(new Position(0, 0), getRgb(0, 0));
-        Vertex v2 = new Vertex(new Position(0, maxY), getRgb(0, maxY));
-        Vertex v3 = new Vertex(new Position(maxX, maxY), getRgb(maxX, maxY));
-        Vertex v4 = new Vertex(new Position(maxX, 0), getRgb(maxX, 0));
-        HyperEdge b1 = new HyperEdge(HyperEdge.EdgeType.B);
-        HyperEdge b2 = new HyperEdge(HyperEdge.EdgeType.B);
-        HyperEdge b3 = new HyperEdge(HyperEdge.EdgeType.B);
-        HyperEdge b4 = new HyperEdge(HyperEdge.EdgeType.B);
-        HyperEdge i = new HyperEdge(HyperEdge.EdgeType.I_NOBREAK);
-        graph.addVertex(v1);
-        graph.addVertex(v2);
-        graph.addVertex(v3);
-        graph.addVertex(v4);
-        graph.addVertex(i);
-        graph.addVertex(b1);
-        graph.addVertex(b2);
-        graph.addVertex(b3);
-        graph.addVertex(b4);
+        Vertex v1 = new Vertex(new Geom(0, 0), getRgb(0, 0), Vertex.Label.V);
+        Vertex v2 = new Vertex(new Geom(0, maxY), getRgb(0, maxY), Vertex.Label.V);
+        Vertex v3 = new Vertex(new Geom(maxX, maxY), getRgb(maxX, maxY), Vertex.Label.V);
+        Vertex v4 = new Vertex(new Geom(maxX, 0), getRgb(maxX, 0), Vertex.Label.V);
+        HyperEdge b1 = new HyperEdgeB(Arrays.asList(v1, v2));
+        HyperEdge b2 = new HyperEdgeB(Arrays.asList(v2, v3));
+        HyperEdge b3 = new HyperEdgeB(Arrays.asList(v3, v4));
+        HyperEdge b4 = new HyperEdgeB(Arrays.asList(v4, v1));
 
-        // jedyne prawile "krawędzie" to Vertex-HyperEdge i HyperEdge-Vertex
-        graph.addEdge(v1, i);
-        graph.addEdge(v2, i);
-        graph.addEdge(v3, i);
-        graph.addEdge(v4, i);
+        HyperEdge i = new HyperEdgeI(Arrays.asList(v1, v2, v3, v4), false);
 
-        graph.addEdge(v1, b1);
-        graph.addEdge(v2, b1);
-        graph.addEdge(v2, b2);
-        graph.addEdge(v3, b2);
-        graph.addEdge(v3, b3);
-        graph.addEdge(v4, b3);
-        graph.addEdge(v4, b4);
-        graph.addEdge(v1, b4);
+        graph.add(i);
+        graph.add(b1);
+        graph.add(b2);
+        graph.add(b3);
+        graph.add(b4);
 
     }
 }

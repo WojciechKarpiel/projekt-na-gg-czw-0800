@@ -1,25 +1,23 @@
 package pl.edu.agh.gg;
 
-import org.jgrapht.Graph;
-import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.io.*;
-import pl.edu.agh.gg.domain.HaxEdge;
-import pl.edu.agh.gg.domain.HyperEdge;
+import pl.edu.agh.gg.domain.Vertex;
 import pl.edu.agh.gg.domain.VertexLike;
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeS;
 import pl.edu.agh.gg.productions.P1;
 
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Launcher {
     public static void main(String[] args) throws ExportException {
-        SimpleGraph<VertexLike, HaxEdge> graph = new SimpleGraph<>(HaxEdge.class);
-
-        HyperEdge s = new HyperEdge(HyperEdge.EdgeType.S);
-        graph.addVertex(s);
+        HyperGraph graph = new HyperGraph();
+        HyperEdge s = new HyperEdgeS(Collections.emptyList());
+        graph.add(s);
 
         P1 p1 = new P1(new FakeImage(), graph);
         p1.apply(s);
@@ -29,7 +27,7 @@ public class Launcher {
                 "neato -s8 -Tpng nazwa_pliku > obrazek.png\n" +
                 "gdzie liczba po s to współczynnik skalowania (spróbuj ze zmienić na 3)\n" +
                 "\n\n");
-        GraphExporter<VertexLike, HaxEdge> exporter =
+        GraphExporter<VertexLike, DefaultEdge> exporter =
                 new DOTExporter<>(VertexLike::getId, Object::toString, null, aleToOchydnexD(graph)
                         ,
                         null
@@ -40,26 +38,16 @@ public class Launcher {
         System.out.println(writer.toString());
     }
 
-    private static ComponentAttributeProvider<VertexLike> aleToOchydnexD(Graph<VertexLike, HaxEdge> graph) {
+    private static ComponentAttributeProvider<VertexLike> aleToOchydnexD(HyperGraph graph) {
         return component ->
                 component.map(
                         v -> Collections.<String, Attribute>singletonMap("pos",
-                                new DefaultAttribute<>(v.getPosition().getX() + "," + v.getPosition().getY() + "!", AttributeType.STRING)),
+                                new DefaultAttribute<>(v.getGeom().getX() + "," + v.getGeom().getY() + "!", AttributeType.STRING)),
                         edge -> {
-                            List<VertexLike> adjacent = graph.edgeSet().stream()
-                                    .filter(h ->
-                                            h.getSource().equals(edge) || h.getTarget().equals(edge))
-                                    .map(h -> {
-                                        if (h.getTarget().equals(edge)) {
-                                            return h.getSource();
-                                        } else {
-                                            return h.getTarget();
-                                        }
-                                    })
-                                    .collect(Collectors.toList());
-                            double x = adjacent.stream().mapToInt(a -> a.getAsVertex().get().getPosition().getX())
+                            List<Vertex> adjacent = edge.getConnectedVertices();
+                            double x = adjacent.stream().mapToInt(a -> a.getAsVertex().get().getGeom().getX())
                                     .average().getAsDouble();
-                            double y = adjacent.stream().mapToInt(a -> a.getAsVertex().get().getPosition().getY())
+                            double y = adjacent.stream().mapToInt(a -> a.getAsVertex().get().getGeom().getY())
                                     .average().getAsDouble();
 
                             return Collections.<String, Attribute>singletonMap("pos",

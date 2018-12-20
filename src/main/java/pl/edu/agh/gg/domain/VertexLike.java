@@ -1,5 +1,7 @@
 package pl.edu.agh.gg.domain;
 
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
+
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
