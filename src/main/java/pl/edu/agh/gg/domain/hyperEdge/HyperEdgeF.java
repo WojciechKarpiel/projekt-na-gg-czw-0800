@@ -6,7 +6,7 @@ import java.util.List;
 
 import static pl.edu.agh.gg.domain.hyperEdge.HyperEdge.EdgeLabel.F;
 
-class HyperEdgeF extends HyperEdge {
+public class HyperEdgeF extends HyperEdge {
     private Direction direction;
 
     public HyperEdgeF(List<Vertex> connectedVerices) {
