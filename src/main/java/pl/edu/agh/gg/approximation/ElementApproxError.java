@@ -52,12 +52,9 @@ public class ElementApproxError {
                 Rgb color = getRgb(x, y);
 
                 // diff array is not needed because everything can be calculated "in place" per pixel
-                double diff_r = 0.0;
-                double diff_g = 0.0;
-                double diff_b = 0.0;
-                diff_r = color.getR();
-                diff_g = color.getG();
-                diff_b = color.getB();
+                double diff_r = color.getR();
+                double diff_g = color.getG();
+                double diff_b = color.getB();
 
                 double fx = (x - v1.getGeom().getX()) / xLength;
                 double nfx = 1 - fx;
