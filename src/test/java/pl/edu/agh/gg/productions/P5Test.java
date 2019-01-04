@@ -1,6 +1,5 @@
 package pl.edu.agh.gg.productions;
 
-import org.jgrapht.Graphs;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,16 +8,10 @@ import pl.edu.agh.gg.HyperGraph;
 import pl.edu.agh.gg.domain.Geom;
 import pl.edu.agh.gg.domain.Rgb;
 import pl.edu.agh.gg.domain.Vertex;
-import pl.edu.agh.gg.domain.VertexLike;
-import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeB;
-
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
-
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+
 
 public class P5Test {
     private Vertex v1 = new Vertex(new Geom(0, 0), new Rgb(255, 200, 0), Vertex.Label.V);
@@ -51,24 +44,19 @@ public class P5Test {
 
 
     @Test(expected = CannotApplyProductionException.class)
-    public void WhenCenterIsNotHyperEdge_ThrowException() {
+    public void WhenNotHyperEdge_ThrowException() {
         p5ToTest.apply(v1);
     }
 
     @Test(expected = CannotApplyProductionException.class)
-    public void WhenCenterEdgeLabelIsNotI_ThrowException() {
+    public void WhenWrongEdgeType_ThrowException() {
         p5ToTest.apply(b1);
     }
 
     @Test(expected = CannotApplyProductionException.class)
-    public void WhenCenterEdgeHasBreakSet_ThrowException() {
+    public void WhenEdgeHasBreakSet_ThrowException() {
         p5ToTest.apply(i1);
     }
-
-//    @Test(expected = CannotApplyProductionException.class)
-//    public void WhenCenterEdgeHasNotEnoughNeighbours_ThrowException() {
-//        p5ToTest.apply(i3);
-//    }
 
     @Test
     public void WhenCenterEdgeHasBreakNotSet_SetBreak() {
