@@ -8,10 +8,7 @@ import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 import pl.edu.agh.gg.util.EdgeUtils;
 
 import java.awt.image.BufferedImage;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class P5 extends Production {
@@ -37,7 +34,8 @@ public class P5 extends Production {
     }
 
     private void propagateBreakForNeighbours(HyperGraph graph, HyperEdgeI baseEdge) {
-        if (baseEdge.getConnectedVertices().size() != 3) {
+        int beseEdgeConnectedVertices = baseEdge.getConnectedVertices().size();
+        if (beseEdgeConnectedVertices != 3 && beseEdgeConnectedVertices != 2) {
             return;
         }
 
@@ -60,12 +58,28 @@ public class P5 extends Production {
             long faceEdgesCount = EdgeUtils.findRelatedFaceEdges(graph, e, commonVertex).stream().filter(fe -> {
                 Set<Vertex> baseEdgeVertices = new HashSet<>(baseEdge.getConnectedVertices());
                 baseEdgeVertices.remove(commonVertex);
+                
+                Set<Vertex> biggerEdgeVertices = new HashSet<>(e.getConnectedVertices());
+                Integer minX = biggerEdgeVertices.stream()
+                        .map(v -> v.getGeom().getX())
+                        .min(Comparator.comparing(Integer::valueOf))
+                        .get();
+                Integer minY = biggerEdgeVertices.stream()
+                        .map(v -> v.getGeom().getY())
+                        .min(Comparator.comparing(Integer::valueOf))
+                        .get();
+                Integer maxX = biggerEdgeVertices.stream()
+                        .map(v -> v.getGeom().getX())
+                        .max(Comparator.comparing(Integer::valueOf))
+                        .get();
+                Integer maxY = biggerEdgeVertices.stream()
+                        .map(v -> v.getGeom().getY())
+                        .max(Comparator.comparing(Integer::valueOf))
+                        .get();
 
-                Set<Vertex> feVertices = new HashSet<>(fe.getConnectedVertices());
-                feVertices.remove(commonVertex);
-                Vertex feVertex = feVertices.stream().findAny().get();
-
-                return baseEdgeVertices.stream().allMatch(ev -> ev.getGeom().getX() != feVertex.getGeom().getX() && ev.getGeom().getY() != feVertex.getGeom().getY());
+                return baseEdgeVertices.stream()
+                        .allMatch(ev -> (ev.getGeom().getX() >= minX && ev.getGeom().getX() <= maxX) || (ev.getGeom().getY() >= minY && ev.getGeom().getY() <= maxY));
+//                        .allMatch(ev -> ev.getGeom().getX() != feVertex.getGeom().getX() && ev.getGeom().getY() != feVertex.getGeom().getY());
             }).count();
             return faceEdgesCount == 1;
         }).collect(Collectors.toList());

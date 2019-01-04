@@ -14,6 +14,7 @@ import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeF;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class P6Test {
     private Vertex v1 = new Vertex(new Geom(0, 100), new Rgb(255, 200, 0), Vertex.Label.V);
@@ -63,7 +64,7 @@ public class P6Test {
 
     @Test (expected = CannotApplyProductionException.class)
     public void WhenSmallEdgeHasWrongNumberOfVertices_ThrowError() {
-        HyperEdgeI wrongNumberOfVerticesSmallEdge = new HyperEdgeI(Arrays.asList(v1,  v3), true);
+        HyperEdgeI wrongNumberOfVerticesSmallEdge = new HyperEdgeI(Collections.singletonList(v1), true);
         graph.add(wrongNumberOfVerticesSmallEdge);
         graph.add(properBigEdge);
         p6ToTest = new P6(new FakeImage(), graph, wrongNumberOfVerticesSmallEdge);

@@ -31,7 +31,7 @@ public class P6 extends Production {
             throw new CannotApplyProductionException();
         }
 
-        if (smallEdgeI.getConnectedVertices().size() != 3) {
+        if (smallEdgeI.getConnectedVertices().size() != 3 && smallEdgeI.getConnectedVertices().size() != 2) {
             throw new CannotApplyProductionException();
         }
         Set<Vertex> commonVertices = EdgeUtils.findCommonVertices(smallEdgeI, bigEdgeI);
