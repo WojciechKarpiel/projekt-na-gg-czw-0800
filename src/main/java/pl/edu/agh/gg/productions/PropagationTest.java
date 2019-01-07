@@ -156,7 +156,8 @@ public class PropagationTest {
             graph.add(fedges.get(i));
         }
 
-        p6 = new P6(new FakeImage(), graph);
+        //TODO: P6 has different constructor so it should be changed.
+        //p6 = new P6(new FakeImage(), graph);
     }
 
     @Test
