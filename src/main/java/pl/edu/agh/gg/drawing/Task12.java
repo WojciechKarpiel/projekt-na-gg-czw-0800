@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class Point12 {
+public class Task12 {
     public static double[][] APPROX_R;
     public static double[][] APPROX_G;
     public static double[][] APPROX_B;
