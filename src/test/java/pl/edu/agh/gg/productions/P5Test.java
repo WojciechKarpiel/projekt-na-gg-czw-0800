@@ -10,6 +10,7 @@ import pl.edu.agh.gg.domain.Rgb;
 import pl.edu.agh.gg.domain.Vertex;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeB;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
+
 import java.util.Arrays;
 
 
@@ -27,11 +28,10 @@ public class P5Test {
 
 
     private P5 p5ToTest;
-    private HyperGraph graph;
 
     @Before
     public void setUp() {
-        graph = new HyperGraph();
+        HyperGraph graph = new HyperGraph();
         graph.add(v1);
         graph.add(v2);
         graph.add(v3);

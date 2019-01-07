@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class P5 extends Production {
 
-    public P5(BufferedImage image, HyperGraph graph) {
+    P5(BufferedImage image, HyperGraph graph) {
         super(image, graph);
     }
 
@@ -57,8 +57,7 @@ public class P5 extends Production {
 
             long faceEdgesCount = EdgeUtils.findRelatedFaceEdges(graph, e, commonVertex).stream().filter(fe -> {
                 Set<Vertex> baseEdgeVertices = new HashSet<>(baseEdge.getConnectedVertices());
-                baseEdgeVertices.remove(commonVertex);
-                
+
                 Set<Vertex> biggerEdgeVertices = new HashSet<>(e.getConnectedVertices());
                 Integer minX = biggerEdgeVertices.stream()
                         .map(v -> v.getGeom().getX())
@@ -79,7 +78,6 @@ public class P5 extends Production {
 
                 return baseEdgeVertices.stream()
                         .allMatch(ev -> (ev.getGeom().getX() >= minX && ev.getGeom().getX() <= maxX) || (ev.getGeom().getY() >= minY && ev.getGeom().getY() <= maxY));
-//                        .allMatch(ev -> ev.getGeom().getX() != feVertex.getGeom().getX() && ev.getGeom().getY() != feVertex.getGeom().getY());
             }).count();
             return faceEdgesCount == 1;
         }).collect(Collectors.toList());

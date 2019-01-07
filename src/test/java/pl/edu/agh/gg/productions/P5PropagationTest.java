@@ -28,7 +28,7 @@ public class P5PropagationTest {
 
     private P5 p5;
     private HyperGraph graph;
-    
+
     @Before
     public void setUp() {
         graph = new HyperGraph();
@@ -42,7 +42,7 @@ public class P5PropagationTest {
         graph.add(properFaceEdge);
         p5 = new P5(new FakeImage(), graph);
     }
-    
+
     @Test
     public void WhenSmallEdgeHasWrongNumberOfVertices_NotPropagate() {
         Vertex v6 = new Vertex(new Geom(50, 250), new Rgb(255, 200, 0), Vertex.Label.V);
@@ -58,7 +58,7 @@ public class P5PropagationTest {
     }
 
     @Test
-    public void WhenBorderDiagonally_NotPropagate(){
+    public void WhenBorderDiagonally_NotPropagate() {
         Vertex v6 = new Vertex(new Geom(50, 400), new Rgb(255, 200, 0), Vertex.Label.V);
         Vertex v7 = new Vertex(new Geom(150, 400), new Rgb(255, 200, 0), Vertex.Label.V);
         HyperEdgeI bigEdge = new HyperEdgeI(Arrays.asList(v3, v6, v7), false);
@@ -74,7 +74,7 @@ public class P5PropagationTest {
 
 
     @Test
-    public void WhenNoFaceEdgePresent_NotPropagate(){
+    public void WhenNoFaceEdgePresent_NotPropagate() {
         graph.removeVertex(properFaceEdge.getAsEdge().get());
 
         p5.apply(properSmallEdge);
