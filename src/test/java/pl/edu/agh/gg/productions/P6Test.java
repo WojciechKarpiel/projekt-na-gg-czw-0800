@@ -9,9 +9,8 @@ import pl.edu.agh.gg.domain.Geom;
 import pl.edu.agh.gg.domain.Rgb;
 import pl.edu.agh.gg.domain.Vertex;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeB;
-
-import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeF;
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,7 +43,7 @@ public class P6Test {
         graph.add(f1);
     }
 
-    @Test (expected = CannotApplyProductionException.class)
+    @Test(expected = CannotApplyProductionException.class)
     public void WhenBigEdgeHasMoreThanOneCommonVerticesWithSmallEdge_ThrowError() {
         HyperEdgeI tooMuchCommonVerticesSmallEdge = new HyperEdgeI(Arrays.asList(v1, v2, v3, v4), true);
         graph.add(tooMuchCommonVerticesSmallEdge);
@@ -53,7 +52,7 @@ public class P6Test {
         p6ToTest.apply(properBigEdge);
     }
 
-    @Test (expected = CannotApplyProductionException.class)
+    @Test(expected = CannotApplyProductionException.class)
     public void WhenBigEdgeHasWrongType_ThrowError() {
         HyperEdgeB b1 = new HyperEdgeB(Arrays.asList(v3, v4, v5, v6));
         graph.add(properSmallEdge);
@@ -62,7 +61,7 @@ public class P6Test {
         p6ToTest.apply(b1);
     }
 
-    @Test (expected = CannotApplyProductionException.class)
+    @Test(expected = CannotApplyProductionException.class)
     public void WhenSmallEdgeHasWrongNumberOfVertices_ThrowError() {
         HyperEdgeI wrongNumberOfVerticesSmallEdge = new HyperEdgeI(Collections.singletonList(v1), true);
         graph.add(wrongNumberOfVerticesSmallEdge);
@@ -71,7 +70,7 @@ public class P6Test {
         p6ToTest.apply(properBigEdge);
     }
 
-    @Test (expected = CannotApplyProductionException.class)
+    @Test(expected = CannotApplyProductionException.class)
     public void WhenSmallEdgeHasNotBreakSet_ThrowError() {
         HyperEdgeI breakNotSetSmallEdge = new HyperEdgeI(Arrays.asList(v1, v2, v3), false);
         graph.add(breakNotSetSmallEdge);
