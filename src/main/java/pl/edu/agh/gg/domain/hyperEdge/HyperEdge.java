@@ -32,7 +32,7 @@ abstract public class HyperEdge extends VertexLike {
     }
 
     public enum EdgeLabel {
-        S, B, I, F;
+        S, B, I, F
     }
 
     // Nie można robić takiego `equals` bo wtedy doda sie tylko jedna krawędź danego typu :(
