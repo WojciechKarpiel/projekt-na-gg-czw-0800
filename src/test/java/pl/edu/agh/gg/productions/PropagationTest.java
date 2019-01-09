@@ -23,7 +23,7 @@ public class PropagationTest {
     private ArrayList<HyperEdgeB> bedges = new ArrayList<>();
     private ArrayList<HyperEdgeF> fedges = new ArrayList<>();
 
-    private P6 p6;
+    private P5 p5;
     private HyperGraph graph;
 
     @Before
@@ -157,14 +157,13 @@ public class PropagationTest {
             graph.add(fedges.get(i));
         }
 
-        //TODO: P6 has different constructor so it should be changed.
-        //p6 = new P6(new FakeImage(), graph);
+        p5 = new P5(new FakeImage(), graph);
     }
 
     @Test
     @Ignore
     public void Point10() {
-        p6.apply(iedges.get(7));
+        p5.apply(iedges.get(7));
         Assert.assertTrue(iedges.get(0).isBreak());
     }
 
