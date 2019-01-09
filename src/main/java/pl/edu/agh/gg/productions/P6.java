@@ -10,6 +10,7 @@ import pl.edu.agh.gg.util.EdgeUtils;
 import java.awt.image.BufferedImage;
 import java.util.Set;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class P6 extends Production {
 
     private HyperEdgeI smallEdgeI;

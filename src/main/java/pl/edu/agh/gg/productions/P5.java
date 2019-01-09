@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class P5 extends Production {
 
     P5(BufferedImage image, HyperGraph graph) {
@@ -33,59 +34,58 @@ public class P5 extends Production {
         propagateBreakForNeighbours(graph, hyperEdgeI);
     }
 
-    private void propagateBreakForNeighbours(HyperGraph graph, HyperEdgeI baseEdge) {
-        int beseEdgeConnectedVertices = baseEdge.getConnectedVertices().size();
+    private void propagateBreakForNeighbours(HyperGraph graph, HyperEdgeI smallEdge) {
+        int beseEdgeConnectedVertices = smallEdge.getConnectedVertices().size();
         if (beseEdgeConnectedVertices != 3 && beseEdgeConnectedVertices != 2) {
             return;
         }
 
-        int baseEdgeSideLength = EdgeUtils.calculateSideLength(baseEdge);
-
-        // getting all bigger edges of type I
-        List<HyperEdgeI> biggerIEdges = graph.vertexSet().stream()
+        List<HyperEdgeI> bigEdges = graph.vertexSet().stream()
+                // getting all edges of type I
                 .filter(VertexLike::isEdge)
                 .map(v -> v.getAsEdge().get())
                 .filter(e -> e.getEdgeLabel() == HyperEdge.EdgeLabel.I)
                 .map(e -> (HyperEdgeI) e)
-                .filter(e -> EdgeUtils.findCommonVertices(e, baseEdge).size() == 1)
-                .filter(e -> EdgeUtils.calculateSideLength(e) > baseEdgeSideLength)
-                .collect(Collectors.toList());
+                // excluding edges without one common vertex
+                .filter(e -> EdgeUtils.findCommonVertices(e, smallEdge).size() == 1)
+                // excluding edges with smaller side
+                .filter(e -> EdgeUtils.calculateSideLength(e) > EdgeUtils.calculateSideLength(smallEdge))
+                // excluding diagonal edges
+                .filter(bigEdge -> {
+                    Set<Vertex> smallEdgeVertices = new HashSet<>(smallEdge.getConnectedVertices());
+                    Set<Vertex> bigEdgeVertices = new HashSet<>(bigEdge.getConnectedVertices());
 
-        // getting edges with face edge, excluding diagonally
-        List<HyperEdgeI> possibleEdges = biggerIEdges.stream().filter(e -> {
-            Vertex commonVertex = EdgeUtils.findCommonVertices(e, baseEdge).stream().findAny().get();
+                    Integer minX = bigEdgeVertices.stream()
+                            .map(v -> v.getGeom().getX())
+                            .min(Comparator.comparing(Integer::valueOf))
+                            .get();
+                    Integer minY = bigEdgeVertices.stream()
+                            .map(v -> v.getGeom().getY())
+                            .min(Comparator.comparing(Integer::valueOf))
+                            .get();
+                    Integer maxX = bigEdgeVertices.stream()
+                            .map(v -> v.getGeom().getX())
+                            .max(Comparator.comparing(Integer::valueOf))
+                            .get();
+                    Integer maxY = bigEdgeVertices.stream()
+                            .map(v -> v.getGeom().getY())
+                            .max(Comparator.comparing(Integer::valueOf))
+                            .get();
 
-            long faceEdgesCount = EdgeUtils.findRelatedFaceEdges(graph, e, commonVertex).stream().filter(fe -> {
-                Set<Vertex> baseEdgeVertices = new HashSet<>(baseEdge.getConnectedVertices());
+                    return smallEdgeVertices.stream()
+                            .allMatch(ev -> (ev.getGeom().getX() >= minX && ev.getGeom().getX() <= maxX) || (ev.getGeom().getY() >= minY && ev.getGeom().getY() <= maxY));
+                })
+                // excluding edges without F edge between
+                .filter(bigEdge -> {
+                    Vertex commonVertex = EdgeUtils.findCommonVertices(bigEdge, smallEdge).stream().findAny().get();
+                    Optional<HyperEdge> any = EdgeUtils.findRelatedFaceEdges(graph, bigEdge, commonVertex).stream().findAny();
+                    return any.isPresent();
+                }).collect(Collectors.toList());
 
-                Set<Vertex> biggerEdgeVertices = new HashSet<>(e.getConnectedVertices());
-                Integer minX = biggerEdgeVertices.stream()
-                        .map(v -> v.getGeom().getX())
-                        .min(Comparator.comparing(Integer::valueOf))
-                        .get();
-                Integer minY = biggerEdgeVertices.stream()
-                        .map(v -> v.getGeom().getY())
-                        .min(Comparator.comparing(Integer::valueOf))
-                        .get();
-                Integer maxX = biggerEdgeVertices.stream()
-                        .map(v -> v.getGeom().getX())
-                        .max(Comparator.comparing(Integer::valueOf))
-                        .get();
-                Integer maxY = biggerEdgeVertices.stream()
-                        .map(v -> v.getGeom().getY())
-                        .max(Comparator.comparing(Integer::valueOf))
-                        .get();
-
-                return baseEdgeVertices.stream()
-                        .allMatch(ev -> (ev.getGeom().getX() >= minX && ev.getGeom().getX() <= maxX) || (ev.getGeom().getY() >= minY && ev.getGeom().getY() <= maxY));
-            }).count();
-            return faceEdgesCount == 1;
-        }).collect(Collectors.toList());
-
-        possibleEdges.forEach(e -> {
-            P6 prod = new P6(getImage(), getGraph(), baseEdge);
-            prod.apply(e);
-            propagateBreakForNeighbours(graph, e);
+        P6 p6 = new P6(getImage(), getGraph(), smallEdge);
+        bigEdges.forEach(possibleEdge -> {
+            p6.apply(possibleEdge);
+            propagateBreakForNeighbours(graph, possibleEdge);
         });
     }
 }

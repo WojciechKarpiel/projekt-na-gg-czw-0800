@@ -2,6 +2,7 @@ package pl.edu.agh.gg.productions;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import pl.edu.agh.gg.FakeImage;
 import pl.edu.agh.gg.HyperGraph;
@@ -161,6 +162,7 @@ public class PropagationTest {
     }
 
     @Test
+    @Ignore
     public void Point10() {
         p6.apply(iedges.get(7));
         Assert.assertTrue(iedges.get(0).isBreak());
