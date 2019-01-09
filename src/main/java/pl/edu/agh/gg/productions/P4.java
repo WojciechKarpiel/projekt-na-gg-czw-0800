@@ -6,12 +6,14 @@ import org.jgrapht.alg.interfaces.KShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.KShortestSimplePaths;
 import org.jgrapht.graph.DefaultEdge;
 import pl.edu.agh.gg.HyperGraph;
+import pl.edu.agh.gg.domain.Geom;
 import pl.edu.agh.gg.domain.Vertex;
 import pl.edu.agh.gg.domain.VertexLike;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeF;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +72,49 @@ public class P4 extends Production {
                 .orElseThrow(CannotApplyProductionException::new);
 
         graph.removeVertex(center);
+
+        int x1 = v5.getGeom().getX();
+        int y3 = v6.getAsVertex().get().getGeom().getY();
+        Vertex v = new Vertex(new Geom(x1, y3), getRgb(x1, y3), Vertex.Label.V);
+        graph.add(v);
+
+        HyperEdgeF f1up = new HyperEdgeF(Arrays.asList(v5, v));
+        graph.add(f1up);
+        graph.addEdge(v5, f1up);
+        graph.addEdge(v, f1up);
+
+        HyperEdgeF f1down = new HyperEdgeF(Arrays.asList(v7, v));
+        graph.add(f1down);
+        graph.addEdge(v7, f1down);
+        graph.addEdge(v, f1down);
+
+        f2left.getConnectedVertices().add(v);
+        graph.addEdge(f2left, v);
+
+        f2right.getConnectedVertices().add(v);
+        graph.addEdge(f2right, v);
+
+        // connect center with I Hyper edges
+        // top left corner
+        leftPath.getVertexList().get(1).getAsEdge().map(e -> {
+            graph.addEdge(e, v);
+            return e.getConnectedVertices().add(v);
+        });
+        // bottom left corner
+        leftPath.getVertexList().get(3).getAsEdge().map(e -> {
+            graph.addEdge(e, v);
+            return e.getConnectedVertices().add(v);
+        });
+        // top right corner
+        rightPath.getVertexList().get(1).getAsEdge().map(e -> {
+            graph.addEdge(e, v);
+            return e.getConnectedVertices().add(v);
+        });
+        // bottom right corner
+        rightPath.getVertexList().get(3).getAsEdge().map(e -> {
+            graph.addEdge(e, v);
+            return e.getConnectedVertices().add(v);
+        });
     }
 }
 
