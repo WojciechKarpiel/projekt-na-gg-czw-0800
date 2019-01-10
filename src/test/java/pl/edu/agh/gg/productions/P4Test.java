@@ -132,5 +132,8 @@ public class P4Test {
         connected_vs.remove(v5);
         connected_vs.remove(v6);
         Assert.assertEquals(1, connected_vs.size());
+        Vertex newVertex = connected_vs.get(0);
+        Assert.assertEquals(v5.getGeom().getX(), newVertex.getGeom().getX());
+        Assert.assertEquals(v6.getGeom().getY(), newVertex.getGeom().getY());
     }
 }
