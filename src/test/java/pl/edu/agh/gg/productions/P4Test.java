@@ -95,4 +95,42 @@ public class P4Test {
         graph.removeVertex(f2_6);
         p4ToTest.apply(f1_5_7);
     }
+
+    @Test
+    public void WhenProperCenterChosen_NewVertexIsCorrectlyConnectedWithIEdges() {
+        Assert.assertEquals(2, i_8_5.getConnectedVertices().size());
+        Assert.assertEquals(2, i_5_6.getConnectedVertices().size());
+        Assert.assertEquals(2, i_7_8.getConnectedVertices().size());
+        Assert.assertEquals(2, i_6_7.getConnectedVertices().size());
+        p4ToTest.apply(f1_5_7);
+        Assert.assertEquals(3, i_8_5.getConnectedVertices().size());
+        Assert.assertEquals(3, i_5_6.getConnectedVertices().size());
+        Assert.assertEquals(3, i_7_8.getConnectedVertices().size());
+        Assert.assertEquals(3, i_6_7.getConnectedVertices().size());
+    }
+
+    @Test
+    public void WhenProperCenterChosen_NewVertexIsCorrectlyConnectedWithF2Edges() {
+        Assert.assertEquals(1, f2_6.getConnectedVertices().size());
+        Assert.assertEquals(1, f2_8.getConnectedVertices().size());
+        p4ToTest.apply(f1_5_7);
+        Assert.assertEquals(2, f2_6.getConnectedVertices().size());
+        Assert.assertEquals(2, f2_8.getConnectedVertices().size());
+    }
+
+    @Test
+    public void WhenProperCenterChosen_CenterF1EdgeIsRemoved() {
+        Assert.assertEquals(true, graph.containsVertex(f1_5_7));
+        p4ToTest.apply(f1_5_7);
+        Assert.assertEquals(false, graph.containsVertex(f1_5_7));
+    }
+
+    @Test
+    public void WhenProperCenterChosen_NewVertexIsAdded() {
+        p4ToTest.apply(f1_5_7);
+        List<Vertex> connected_vs = i_5_6.getConnectedVertices();
+        connected_vs.remove(v5);
+        connected_vs.remove(v6);
+        Assert.assertEquals(1, connected_vs.size());
+    }
 }
