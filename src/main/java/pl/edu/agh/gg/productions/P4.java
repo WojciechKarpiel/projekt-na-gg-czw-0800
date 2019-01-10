@@ -13,6 +13,7 @@ import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeF;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -88,33 +89,46 @@ public class P4 extends Production {
         graph.addEdge(v7, f1down);
         graph.addEdge(v, f1down);
 
-        f2left.getConnectedVertices().add(v);
+        List<Vertex> connectedVertices = f2left.getConnectedVertices();
+        f2left.setConnectedVertices(updatedVertices(connectedVertices, v));
         graph.addEdge(f2left, v);
 
-        f2right.getConnectedVertices().add(v);
+        connectedVertices = f2right.getConnectedVertices();
+        f2right.setConnectedVertices(updatedVertices(connectedVertices, v));
         graph.addEdge(f2right, v);
 
         // connect center with I Hyper edges
         // top left corner
         leftPath.getVertexList().get(1).getAsEdge().map(e -> {
             graph.addEdge(e, v);
-            return e.getConnectedVertices().add(v);
+            e.setConnectedVertices(updatedVertices(e.getConnectedVertices(), v));
+            return e;
         });
         // bottom left corner
         leftPath.getVertexList().get(3).getAsEdge().map(e -> {
             graph.addEdge(e, v);
-            return e.getConnectedVertices().add(v);
+            e.setConnectedVertices(updatedVertices(e.getConnectedVertices(), v));
+            return e;
         });
         // top right corner
         rightPath.getVertexList().get(1).getAsEdge().map(e -> {
             graph.addEdge(e, v);
-            return e.getConnectedVertices().add(v);
+            e.setConnectedVertices(updatedVertices(e.getConnectedVertices(), v));
+            return e;
         });
         // bottom right corner
         rightPath.getVertexList().get(3).getAsEdge().map(e -> {
             graph.addEdge(e, v);
-            return e.getConnectedVertices().add(v);
+            e.setConnectedVertices(updatedVertices(e.getConnectedVertices(), v));
+            return e;
         });
+    }
+
+    private List<Vertex> updatedVertices(List<Vertex> connVertices, Vertex v) {
+        List<Vertex> vertices = new ArrayList<>(connVertices.size() + 1);
+        vertices.addAll(connVertices);
+        vertices.add(v);
+        return vertices;
     }
 }
 
