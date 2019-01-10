@@ -82,9 +82,8 @@ public class P5 extends Production {
                     return any.isPresent();
                 }).collect(Collectors.toList());
 
-        P6 p6 = new P6(getImage(), getGraph(), smallEdge);
         bigEdges.forEach(possibleEdge -> {
-            p6.apply(possibleEdge);
+            possibleEdge.setBreak(true);
             propagateBreakForNeighbours(graph, possibleEdge);
         });
     }
