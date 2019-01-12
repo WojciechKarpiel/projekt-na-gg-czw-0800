@@ -10,6 +10,7 @@ import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,8 @@ public class P2 extends Production {
 
         connectedVertices.forEach(vertex -> graph.add(new HyperEdgeI(Arrays.asList(vertex, v), false)));
 
+
+
         HyperEdgeF fUp = new HyperEdgeF(Arrays.asList(v));
         HyperEdgeF fBottom = new HyperEdgeF(Arrays.asList(v));
         HyperEdgeF fLeft = new HyperEdgeF(Arrays.asList(v));
@@ -53,6 +56,9 @@ public class P2 extends Production {
         graph.add(fBottom);
         graph.add(fLeft);
         graph.add(fRight);
+
+        //inaczej usuwa polaczone wierzcholki razem z krawedzia
+        edge.setConnectedVertices(Collections.emptyList());
 
         graph.removeEdge(edge);
     }
