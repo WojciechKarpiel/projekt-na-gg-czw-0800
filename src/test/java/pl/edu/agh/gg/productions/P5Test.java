@@ -30,7 +30,7 @@ public class P5Test {
     private P5 p5ToTest;
 
     @Before
-    public void setUp() {
+    public void setUp(){
         HyperGraph graph = new HyperGraph();
         graph.add(v1);
         graph.add(v2);
@@ -63,5 +63,4 @@ public class P5Test {
         p5ToTest.apply(i2);
         Assert.assertTrue(i2.isBreak());
     }
-
 }
