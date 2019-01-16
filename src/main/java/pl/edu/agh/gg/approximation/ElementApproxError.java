@@ -19,14 +19,6 @@ public class ElementApproxError {
         this.image = image;
     }
 
-    public BufferedImage getImage() {
-        return image;
-    }
-
-    public void setImage(BufferedImage image) {
-        this.image = image;
-    }
-
     public double calculateError(HyperEdgeI edgeI) throws CannotCalculateErrorException {
         List<Vertex> vertices = getVertexList(edgeI);
         Vertex v1 = vertices.get(0);
@@ -81,7 +73,35 @@ public class ElementApproxError {
         return new Rgb(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    public List<Vertex> getVertexList(HyperEdgeI edgeI) {
+    private Vertex getRecoveredVertex(List<Vertex> vertices){
+        // 4 point in I edge makes a rectangle. So if one point is missing,
+        // then it can be inferred from another points. To create it,
+        // we use x and y values, that were used only once by all 3 vertices.
+        Set<Integer> xSet = new HashSet<>();
+        Set<Integer> ySet = new HashSet<>();
+        for (Vertex v : vertices) {
+            int x = v.getGeom().getX();
+            int y = v.getGeom().getY();
+            if (xSet.contains(x)) {
+                xSet.remove(x);
+            } else {
+                xSet.add(x);
+            }
+            if (ySet.contains(y)) {
+                ySet.remove(y);
+            } else {
+                ySet.add(y);
+            }
+        }
+        if (xSet.size() != 1 || ySet.size() != 1) {
+            throw new CannotCalculateErrorException();
+        }
+        int x = xSet.iterator().next();
+        int y = ySet.iterator().next();
+        return new Vertex(new Geom(x, y), getRgb(x, y), Vertex.Label.V);
+    }
+
+    private List<Vertex> getVertexList(HyperEdgeI edgeI) {
         // making copy of vertices list to avoid original list modification
         List<Vertex> vertices = new ArrayList<>(edgeI.getConnectedVertices());
         if (vertices.size() < 3 || vertices.size() > 4) {
@@ -89,31 +109,7 @@ public class ElementApproxError {
         }
 
         if (vertices.size() == 3) {
-            // 4 point in I edge makes a rectangle. So if one point is missing,
-            // then it can be inferred from another points. To create it,
-            // we use x and y values, that were used only once by all 3 vertices.
-            Set<Integer> xSet = new HashSet<>();
-            Set<Integer> ySet = new HashSet<>();
-            for (Vertex v : vertices) {
-                int x = v.getGeom().getX();
-                int y = v.getGeom().getY();
-                if (xSet.contains(x)) {
-                    xSet.remove(x);
-                } else {
-                    xSet.add(x);
-                }
-                if (ySet.contains(y)) {
-                    ySet.remove(y);
-                } else {
-                    ySet.add(y);
-                }
-            }
-            if (xSet.size() != 1 || ySet.size() != 1) {
-                throw new CannotCalculateErrorException();
-            }
-            int x = xSet.iterator().next();
-            int y = ySet.iterator().next();
-            Vertex v = new Vertex(new Geom(x, y), getRgb(x, y), Vertex.Label.V);
+            Vertex v = getRecoveredVertex(vertices);
             vertices.add(v);
         }
 

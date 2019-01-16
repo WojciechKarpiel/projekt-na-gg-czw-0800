@@ -17,20 +17,29 @@ import java.util.Arrays;
 public class ElementApproxErrorTest {
 
     private class TestPurposeFakeImage extends FakeImage {
+
+        private int testX;
+        private int testY;
+
+        TestPurposeFakeImage(int testX, int testY) {
+            this.testX = testX;
+            this.testY = testY;
+        }
+
         @Override
         public int getRGB(int x, int y) {
-            if (x == testedPixelX && y == testedPixelY) {
+            if (x == testX && y == testY) {
                 return testedColor.getRGB();
             }
-            return super.getRGB(x, y);
+            return Color.gray.getRGB();
         }
     }
 
-    private Rgb orangeRgb = getRgbFromColor(Color.orange);
-    private Vertex v1 = new Vertex(new Geom(0, 0), orangeRgb, Vertex.Label.V);
-    private Vertex v2 = new Vertex(new Geom(0, 10), orangeRgb, Vertex.Label.V);
-    private Vertex v3 = new Vertex(new Geom(10, 10), orangeRgb, Vertex.Label.V);
-    private Vertex v4 = new Vertex(new Geom(10, 0), orangeRgb, Vertex.Label.V);
+    private Rgb grayRgb = getRgbFromColor(Color.gray);
+    private Vertex v1 = new Vertex(new Geom(0, 0), grayRgb, Vertex.Label.V);
+    private Vertex v2 = new Vertex(new Geom(0, 10), grayRgb, Vertex.Label.V);
+    private Vertex v3 = new Vertex(new Geom(10, 10), grayRgb, Vertex.Label.V);
+    private Vertex v4 = new Vertex(new Geom(10, 0), grayRgb, Vertex.Label.V);
     private HyperEdgeB b1 = new HyperEdgeB(Arrays.asList(v1, v2));
     private HyperEdgeB b2 = new HyperEdgeB(Arrays.asList(v2, v4));
     private HyperEdgeB b3 = new HyperEdgeB(Arrays.asList(v4, v3));
@@ -40,8 +49,6 @@ public class ElementApproxErrorTest {
     private ElementApproxError elementApproxErrorToTest;
     private FakeImage fakeImage;
 
-    private int testedPixelX = 5;
-    private int testedPixelY = 5;
     private Color testedColor = Color.cyan;
 
     private Rgb getRgbFromColor(Color color) {
@@ -60,7 +67,7 @@ public class ElementApproxErrorTest {
         graph.add(b2);
         graph.add(b3);
         graph.add(b4);
-        fakeImage = new FakeImage();
+        fakeImage = new TestPurposeFakeImage(-1, -1);
         elementApproxErrorToTest = new ElementApproxError(fakeImage);
     }
 
@@ -72,6 +79,8 @@ public class ElementApproxErrorTest {
     @Test
     public void ErrorOfPixelsIsProperlyCalculated() {
         Assert.assertEquals(0, elementApproxErrorToTest.calculateError(i), 0.0001);
+        int testedPixelX = 5;
+        int testedPixelY = 5;
         fakeImage.setRGB(testedPixelX, testedPixelY, Color.cyan.getRGB());
 
         double fx = (testedPixelX - v1.getGeom().getX()) / 10;
@@ -93,7 +102,8 @@ public class ElementApproxErrorTest {
         double expectedError = 0.5 * Math.pow(diff_r, 2) + 0.3 * Math.pow(diff_g, 2) + 0.2 * Math.pow(diff_b, 2);
 
         Assert.assertEquals(expectedError,
-                new ElementApproxError(new TestPurposeFakeImage()).calculateError(i), 0.0001);
+                new ElementApproxError(new TestPurposeFakeImage(testedPixelX, testedPixelY)
+                ).calculateError(i), 0.0001);
     }
 
     @Test()
