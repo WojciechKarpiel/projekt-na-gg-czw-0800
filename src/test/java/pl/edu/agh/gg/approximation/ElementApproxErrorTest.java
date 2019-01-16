@@ -96,9 +96,15 @@ public class ElementApproxErrorTest {
                 new ElementApproxError(new TestPurposeFakeImage()).calculateError(i), 0.0001);
     }
 
-    @Test(expected = CannotCalculateErrorException.class)
-    public void WhenConnectedVerticesIsNotFour_ThrowException() {
+    @Test()
+    public void WhenConnectedVerticesIsThree_DoesNotThrowException() {
         i.setConnectedVertices(Arrays.asList(v1, v2, v3));
+        elementApproxErrorToTest.calculateError(i);
+    }
+
+    @Test(expected = CannotCalculateErrorException.class)
+    public void WhenConnectedVerticesIsTwo_ThrowException() {
+        i.setConnectedVertices(Arrays.asList(v1, v2));
         elementApproxErrorToTest.calculateError(i);
     }
 
