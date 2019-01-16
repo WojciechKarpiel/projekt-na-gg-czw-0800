@@ -6,11 +6,9 @@ import pl.edu.agh.gg.approximation.ElementApproxError;
 import pl.edu.agh.gg.domain.VertexLike;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeB;
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeF;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
-import pl.edu.agh.gg.productions.CannotApplyProductionException;
-import pl.edu.agh.gg.productions.P2;
-import pl.edu.agh.gg.productions.P3;
-import pl.edu.agh.gg.productions.P5;
+import pl.edu.agh.gg.productions.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,6 +48,13 @@ public class Task16 {
                     .map(e -> (HyperEdgeB) e)
                     .collect(Collectors.toList());
 
+            List<HyperEdgeF> fEdges = hyperGraph.vertexSet().stream()
+                    .filter(VertexLike::isEdge)
+                    .map(v -> v.getAsEdge().get())
+                    .filter(e -> e.getEdgeLabel() == HyperEdge.EdgeLabel.F)
+                    .map(e -> (HyperEdgeF) e)
+                    .collect(Collectors.toList());
+
             boolean anyProductionWasStarted = false;
             do {
                 // second loop
@@ -72,7 +77,17 @@ public class Task16 {
                     }
                     anyProductionWasStarted = true;
                 }
-                // TODO: third and forth loop
+                // forth loop
+                for (HyperEdgeF hyperEdgeF : fEdges) {
+                    P4 p4 = new P4(new FakeImage(), hyperGraph);
+                    try {
+                        p4.apply(hyperEdgeF);
+                    } catch (CannotApplyProductionException e) {
+                        continue;
+                    }
+                    anyProductionWasStarted = true;
+                }
+
             } while (anyProductionWasStarted);
         }
     }
