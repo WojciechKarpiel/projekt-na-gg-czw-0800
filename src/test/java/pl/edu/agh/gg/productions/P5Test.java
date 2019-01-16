@@ -1,5 +1,8 @@
 package pl.edu.agh.gg.productions;
 
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.io.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,10 +11,17 @@ import pl.edu.agh.gg.HyperGraph;
 import pl.edu.agh.gg.domain.Geom;
 import pl.edu.agh.gg.domain.Rgb;
 import pl.edu.agh.gg.domain.Vertex;
+import pl.edu.agh.gg.domain.VertexLike;
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeB;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 public class P5Test {
@@ -30,7 +40,7 @@ public class P5Test {
     private P5 p5ToTest;
 
     @Before
-    public void setUp() {
+    public void setUp(){
         HyperGraph graph = new HyperGraph();
         graph.add(v1);
         graph.add(v2);
@@ -63,5 +73,4 @@ public class P5Test {
         p5ToTest.apply(i2);
         Assert.assertTrue(i2.isBreak());
     }
-
 }

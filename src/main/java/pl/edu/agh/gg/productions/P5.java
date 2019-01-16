@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class P5 extends Production {
 
-    P5(BufferedImage image, HyperGraph graph) {
+    public P5(BufferedImage image, HyperGraph graph) {
         super(image, graph);
     }
 
