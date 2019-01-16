@@ -12,7 +12,7 @@ import pl.edu.agh.gg.productions.P5;
 import java.util.Arrays;
 
 public class LauncherP5P6 {
-    private static Drawer drawer = new Drawer();
+    private static GraphDrawer graphDrawer = new GraphDrawer();
 
     public static void main(String[] args) throws Exception {
         visualiseP5();
@@ -31,10 +31,10 @@ public class LauncherP5P6 {
         graph.add(v2);
         graph.add(v3);
         graph.add(i2);
-        drawer.draw(graph, "P5Before.dot");
+        graphDrawer.draw(graph, "P5Before.dot");
         P5 p5 = new P5(im, graph);
         p5.apply(i2);
-        drawer.draw(graph, "P5After.dot");
+        graphDrawer.draw(graph, "P5After.dot");
     }
 
     public static void visualisePropagation() throws Exception {
@@ -70,10 +70,10 @@ public class LauncherP5P6 {
         graph.add(secondBigEdge);
         graph.add(secondFaceEdge);
 
-        drawer.draw(graph, "PropagationBefore.dot");
+        graphDrawer.draw(graph, "PropagationBefore.dot");
         P5 p5 = new P5(im, graph);
         p5.apply(properSmallEdge);
-        drawer.draw(graph, "PropagationAfter.dot");
+        graphDrawer.draw(graph, "PropagationAfter.dot");
     }
 }
 

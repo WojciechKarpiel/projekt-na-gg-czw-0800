@@ -10,7 +10,7 @@ import java.io.*;
 import java.util.Collections;
 import java.util.List;
 
-public class Drawer {
+public class GraphDrawer {
     public void draw(HyperGraph hyperGraph, String filename) throws IOException, ExportException {
         GraphExporter<VertexLike, DefaultEdge> exporter =
                 new DOTExporter<>(VertexLike::getId, Object::toString, null, aleToOchydnexD(hyperGraph)
