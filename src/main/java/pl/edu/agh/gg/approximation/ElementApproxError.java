@@ -1,5 +1,6 @@
 package pl.edu.agh.gg.approximation;
 
+import pl.edu.agh.gg.domain.Geom;
 import pl.edu.agh.gg.domain.Rgb;
 import pl.edu.agh.gg.domain.Vertex;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
@@ -7,7 +8,9 @@ import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ElementApproxError {
     private BufferedImage image;
@@ -25,19 +28,7 @@ public class ElementApproxError {
     }
 
     public double calculateError(HyperEdgeI edgeI) throws CannotCalculateErrorException {
-        // making copy of vertices list, because original list can be immutable
-        List<Vertex> vertices = new ArrayList<>(edgeI.getConnectedVertices());
-        if (vertices.size() != 4) {
-            throw new CannotCalculateErrorException();
-        }
-
-        vertices.sort((v1, v2) -> {
-            int vDelta = v2.getGeom().getY() - v1.getGeom().getY();
-            if (vDelta == 0) {
-                return v1.getGeom().getX() - v2.getGeom().getX();
-            }
-            return vDelta;
-        });
+        List<Vertex> vertices = getVertexList(edgeI);
         Vertex v1 = vertices.get(0);
         Vertex v2 = vertices.get(1);
         Vertex v3 = vertices.get(2);
@@ -88,5 +79,51 @@ public class ElementApproxError {
     public Rgb getRgb(int x, int y) {
         Color color = new Color(image.getRGB(x, y));
         return new Rgb(color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    public List<Vertex> getVertexList(HyperEdgeI edgeI) {
+        // making copy of vertices list to avoid original list modification
+        List<Vertex> vertices = new ArrayList<>(edgeI.getConnectedVertices());
+        if (vertices.size() < 3 || vertices.size() > 4) {
+            throw new CannotCalculateErrorException();
+        }
+
+        if (vertices.size() == 3) {
+            // 4 point in I edge makes a rectangle. So if one point is missing,
+            // then it can be inferred from another points. To create it,
+            // we use x and y values, that were used only once by all 3 vertices.
+            Set<Integer> xSet = new HashSet<>();
+            Set<Integer> ySet = new HashSet<>();
+            for (Vertex v : vertices) {
+                int x = v.getGeom().getX();
+                int y = v.getGeom().getY();
+                if (xSet.contains(x)) {
+                    xSet.remove(x);
+                } else {
+                    xSet.add(x);
+                }
+                if (ySet.contains(y)) {
+                    ySet.remove(y);
+                } else {
+                    ySet.add(y);
+                }
+            }
+            if (xSet.size() != 1 || ySet.size() != 1) {
+                throw new CannotCalculateErrorException();
+            }
+            int x = xSet.iterator().next();
+            int y = ySet.iterator().next();
+            Vertex v = new Vertex(new Geom(x, y), getRgb(x, y), Vertex.Label.V);
+            vertices.add(v);
+        }
+
+        vertices.sort((v1, v2) -> {
+            int vDelta = v2.getGeom().getY() - v1.getGeom().getY();
+            if (vDelta == 0) {
+                return v1.getGeom().getX() - v2.getGeom().getX();
+            }
+            return vDelta;
+        });
+        return vertices;
     }
 }
