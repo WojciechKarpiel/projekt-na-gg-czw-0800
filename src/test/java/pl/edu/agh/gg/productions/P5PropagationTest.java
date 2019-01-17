@@ -39,7 +39,7 @@ public class P5PropagationTest {
         graph.add(v5);
         graph.add(properSmallEdge);
         graph.add(properBigEdge);
-        graph.add(properFaceEdge);
+        //graph.add(properFaceEdge);
         p5 = new P5(new FakeImage(), graph);
     }
 
@@ -76,6 +76,8 @@ public class P5PropagationTest {
     @Test
     public void WhenNoFaceEdgePresent_NotPropagate() {
         graph.removeVertex(properFaceEdge.getAsEdge().get());
+        v3.getHyperEdges().remove(properFaceEdge);
+        v4.getHyperEdges().remove(properFaceEdge);
 
         p5.apply(properSmallEdge);
         Assert.assertFalse(properBigEdge.isBreak());

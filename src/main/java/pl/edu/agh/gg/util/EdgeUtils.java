@@ -1,8 +1,6 @@
 package pl.edu.agh.gg.util;
 
-import pl.edu.agh.gg.HyperGraph;
 import pl.edu.agh.gg.domain.Vertex;
-import pl.edu.agh.gg.domain.VertexLike;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
 
 import java.util.HashSet;
@@ -33,13 +31,10 @@ public class EdgeUtils {
         return commonVertices;
     }
 
-    public static Set<HyperEdge> findRelatedFaceEdges(HyperGraph graph, HyperEdge edge, Vertex vertex) {
-        return graph.vertexSet().stream()
-                .filter(VertexLike::isEdge)
-                .map(v -> v.getAsEdge().get())
+    public static Set<HyperEdge> findRelatedFaceEdges(HyperEdge edge, Vertex vertex) {
+        return vertex.getHyperEdges().stream()
                 .filter(e -> e.getEdgeLabel() == HyperEdge.EdgeLabel.F)
                 .filter(e -> e.getConnectedVertices().contains(vertex))
-                .filter(e -> findCommonVertices(edge, e).size() == 2)
                 .collect(Collectors.toSet());
     }
 }

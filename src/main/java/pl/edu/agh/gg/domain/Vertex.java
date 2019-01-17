@@ -1,12 +1,19 @@
 package pl.edu.agh.gg.domain;
 
+import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
+
+import java.util.LinkedList;
+import java.util.List;
+
 public class Vertex extends VertexLike {
     private final Geom geom;
     private final Rgb rgb;
     private Label label;
+    private List<HyperEdge> hyperEdges;
 
     public Vertex(Geom geom, Rgb rgb, Label label) {
         super(EntityType.VERTEX);
+        this.hyperEdges = new LinkedList<>();
         this.geom = geom;
         this.rgb = rgb;
         this.label = label;
@@ -23,6 +30,10 @@ public class Vertex extends VertexLike {
 
     public Rgb getRgb() {
         return rgb;
+    }
+
+    public List<HyperEdge> getHyperEdges() {
+        return hyperEdges;
     }
 
 //    @Override
