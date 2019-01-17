@@ -42,8 +42,8 @@ public class P4Test {
     public void setUp() {
         graph = new HyperGraph();
         f1_5_7.setDirection(HyperEdgeF.Direction.UP);
-        f2_8.setDirection(HyperEdgeF.Direction.LEFT);
-        f2_6.setDirection(HyperEdgeF.Direction.RIGHT);
+        f2_8.setDirection(HyperEdgeF.Direction.RIGHT);
+        f2_6.setDirection(HyperEdgeF.Direction.LEFT);
 
         graph.add(v5);
         graph.add(v6);
@@ -135,5 +135,36 @@ public class P4Test {
         Vertex newVertex = connected_vs.get(0);
         Assert.assertEquals(v5.getGeom().getX(), newVertex.getGeom().getX());
         Assert.assertEquals(v6.getGeom().getY(), newVertex.getGeom().getY());
+    }
+
+    @Test
+    public void WhenSideVerticesHaveMoreF2s_OnlyProperAreConnected() {
+        HyperEdgeF f2_8_up = addF2Neighbour(v8, HyperEdgeF.Direction.UP);
+        HyperEdgeF f2_8_down = addF2Neighbour(v8, HyperEdgeF.Direction.BOTTOM);
+        HyperEdgeF f2_8_left = addF2Neighbour(v8, HyperEdgeF.Direction.LEFT);
+
+        HyperEdgeF f2_6_up = addF2Neighbour(v6, HyperEdgeF.Direction.UP);
+        HyperEdgeF f2_6_down = addF2Neighbour(v6, HyperEdgeF.Direction.BOTTOM);
+        HyperEdgeF f2_6_right = addF2Neighbour(v6, HyperEdgeF.Direction.RIGHT);
+
+        p4ToTest.apply(f1_5_7);
+
+        Assert.assertEquals(f2_8_up.getConnectedVertices().size(), 1);
+        Assert.assertEquals(f2_8_down.getConnectedVertices().size(), 1);
+        Assert.assertEquals(f2_8_left.getConnectedVertices().size(), 1);
+        Assert.assertEquals(f2_8.getConnectedVertices().size(), 2);
+
+        Assert.assertEquals(f2_6_up.getConnectedVertices().size(), 1);
+        Assert.assertEquals(f2_6_down.getConnectedVertices().size(), 1);
+        Assert.assertEquals(f2_6_right.getConnectedVertices().size(), 1);
+        Assert.assertEquals(f2_6.getConnectedVertices().size(), 2);
+    }
+
+    private HyperEdgeF addF2Neighbour(Vertex neighbour, HyperEdgeF.Direction dir) {
+        HyperEdgeF edgeF = new HyperEdgeF(Collections.singletonList(neighbour));
+        edgeF.setDirection(dir);
+        graph.add(edgeF);
+        graph.addEdge(edgeF, neighbour);
+        return edgeF;
     }
 }
