@@ -40,12 +40,15 @@ public class P2 extends Production {
 
         connectedVertices.forEach(vertex -> graph.add(new HyperEdgeI(Arrays.asList(vertex, v), false)));
 
-
-
         HyperEdgeF fUp = new HyperEdgeF(Arrays.asList(v));
         HyperEdgeF fBottom = new HyperEdgeF(Arrays.asList(v));
         HyperEdgeF fLeft = new HyperEdgeF(Arrays.asList(v));
         HyperEdgeF fRight = new HyperEdgeF(Arrays.asList(v));
+
+        fUp.setGeom(new Geom(x, (y2 + y) / 2));
+        fBottom.setGeom(new Geom(x, (y1 + y) / 2));
+        fLeft.setGeom(new Geom((x2 + x) / 2, y));
+        fRight.setGeom(new Geom((x1 + x) / 2, y));
 
         fUp.setDirection(HyperEdgeF.Direction.UP);
         fBottom.setDirection(HyperEdgeF.Direction.BOTTOM);

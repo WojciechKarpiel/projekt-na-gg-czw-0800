@@ -1,5 +1,6 @@
 package pl.edu.agh.gg.domain.hyperEdge;
 
+import pl.edu.agh.gg.domain.Geom;
 import pl.edu.agh.gg.domain.Vertex;
 import pl.edu.agh.gg.domain.VertexLike;
 
@@ -8,11 +9,20 @@ import java.util.List;
 abstract public class HyperEdge extends VertexLike {
     private EdgeLabel edgeLabel;
     private List<Vertex> connectedVertices;
+    private Geom geom;
 
     public HyperEdge(EdgeLabel edgeLabel, List<Vertex> connectedVertices) {
         super(EntityType.EDGE);
         this.edgeLabel = edgeLabel;
         this.connectedVertices = connectedVertices;
+    }
+
+    public Geom getGeom() {
+        return geom;
+    }
+
+    public void setGeom(Geom geom) {
+        this.geom = geom;
     }
 
     public EdgeLabel getEdgeLabel() {

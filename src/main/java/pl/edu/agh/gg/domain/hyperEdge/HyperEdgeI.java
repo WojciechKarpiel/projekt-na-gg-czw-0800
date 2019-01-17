@@ -22,5 +22,14 @@ public class HyperEdgeI extends HyperEdge {
     public void setBreak(boolean break_) {
         this.break_ = break_;
     }
+
+    @Override
+    public String toString() {
+        return "HyperEdge{" +
+                "edgeLabel=" + super.getEdgeLabel() +
+                ", id=" + getId() +
+                ", break=" + break_ +
+                '}';
+    }
 }
 
