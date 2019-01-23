@@ -105,6 +105,7 @@ public class ElementApproxError {
         // making copy of vertices list to avoid original list modification
         List<Vertex> vertices = new ArrayList<>(edgeI.getConnectedVertices());
         if (vertices.size() < 3 || vertices.size() > 4) {
+            System.out.println(edgeI);
             throw new CannotCalculateErrorException();
         }
 

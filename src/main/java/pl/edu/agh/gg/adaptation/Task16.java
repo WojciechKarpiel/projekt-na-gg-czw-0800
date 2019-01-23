@@ -2,6 +2,7 @@ package pl.edu.agh.gg.adaptation;
 
 import pl.edu.agh.gg.FakeImage;
 import pl.edu.agh.gg.HyperGraph;
+import pl.edu.agh.gg.P5Utils.GraphDrawer;
 import pl.edu.agh.gg.approximation.ElementApproxError;
 import pl.edu.agh.gg.domain.VertexLike;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdge;
@@ -10,6 +11,9 @@ import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeF;
 import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 import pl.edu.agh.gg.productions.*;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,26 +24,34 @@ public class Task16 {
         this.hyperEdgesI = hyperEdgesI;
     }
 
-    public void markHyperedgesForAdaptation(HyperGraph hyperGraph, double eps, long maxStep) {
-
+    public void markHyperedgesForAdaptation(HyperGraph hyperGraph, double eps, long maxStep) throws Exception{
         for (long i = 0; i < maxStep; i++) {
+            GraphDrawer graphDrawer = new GraphDrawer();
+            graphDrawer.draw(hyperGraph, "After.dot");
+
             // first loop
             boolean errorBiggerThanEps = false;
             ElementApproxError elementApproxError = new ElementApproxError(new FakeImage());
             for (HyperEdgeI hyperEdgeI : hyperEdgesI) {
-                double approxError = elementApproxError.calculateError(hyperEdgeI);
-                if (approxError > eps) {
-                    errorBiggerThanEps = true;
-                    P5 p5 = new P5(new FakeImage(), hyperGraph);
-                    try {
-                        p5.apply(hyperEdgeI);
-                    } catch (CannotApplyProductionException ignore) {
+                System.out.println(hyperEdgeI);
+                try {
+                    double approxError = elementApproxError.calculateError(hyperEdgeI);
+                    if (approxError > eps) {
+                        errorBiggerThanEps = true;
+                        P5 p5 = new P5(new FakeImage(), hyperGraph);
+                        try {
+                            p5.apply(hyperEdgeI);
+                        } catch (CannotApplyProductionException ignore) {
+                        }
                     }
+                } catch (Exception e){
+
                 }
             }
             if (!errorBiggerThanEps) {
                 return;
             }
+
 
             List<HyperEdgeB> bEdges = hyperGraph.vertexSet().stream()
                     .filter(VertexLike::isEdge)
@@ -55,8 +67,10 @@ public class Task16 {
                     .map(e -> (HyperEdgeF) e)
                     .collect(Collectors.toList());
 
+
             boolean anyProductionWasStarted = false;
             do {
+                anyProductionWasStarted = false;
                 // second loop
                 for (HyperEdgeI hyperEdgeI : hyperEdgesI) {
                     P2 p2 = new P2(new FakeImage(), hyperGraph);
@@ -89,6 +103,13 @@ public class Task16 {
                 }
 
             } while (anyProductionWasStarted);
+
+            hyperEdgesI = hyperGraph.vertexSet().stream()
+                    .filter(VertexLike::isEdge)
+                    .map(v -> v.getAsEdge().get())
+                    .filter(e -> e.getEdgeLabel() == HyperEdge.EdgeLabel.I)
+                    .map(e -> (HyperEdgeI) e)
+                    .collect(Collectors.toList());
         }
     }
 }
