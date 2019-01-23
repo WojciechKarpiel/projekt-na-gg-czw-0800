@@ -1,15 +1,22 @@
 package pl.edu.agh.gg.productions;
 
 import org.jgrapht.Graphs;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.io.DOTExporter;
+import org.jgrapht.io.ExportException;
+import org.jgrapht.io.GraphExporter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import pl.edu.agh.gg.FakeImage;
 import pl.edu.agh.gg.HyperGraph;
+import pl.edu.agh.gg.Launcher;
 import pl.edu.agh.gg.domain.Vertex;
 import pl.edu.agh.gg.domain.VertexLike;
 import pl.edu.agh.gg.domain.hyperEdge.*;
 
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -77,18 +84,15 @@ public class MultipleProductionsTest {
         //szesc produkcji p3
         getListOfBEdges(graph).stream().filter(e -> !neighborsOfTopLeft.contains(e)).forEach(e -> p3.apply(e));
 
+        GraphExporter<VertexLike, DefaultEdge> exporter =
+                new DOTExporter<>(VertexLike::getId, Object::toString, null, Launcher.aleToOchydnexD(graph)
+                        ,
+                        null
+                );
+
         //dwie produkcje p4
 
-        Object copy = graph.clone();
-
-        try {
-            listOfOriginalFEdges.stream().filter(e -> e.getDirection() == HyperEdgeF.Direction.BOTTOM || e.getDirection() == HyperEdgeF.Direction.RIGHT).forEach(e -> p4.apply(e));
-        } catch (Exception e) {
-            System.out.println("P4 failed!!! Exception: " + e.getMessage());
-            graph = (HyperGraph) copy;
-        }
-
-        //graph.vertexSet().stream().forEach(System.out::println);
+        listOfOriginalFEdges.stream().filter(e -> e.getDirection() == HyperEdgeF.Direction.BOTTOM || e.getDirection() == HyperEdgeF.Direction.RIGHT).forEach(e -> p4.apply(e));
     }
 
     //18 before p4
