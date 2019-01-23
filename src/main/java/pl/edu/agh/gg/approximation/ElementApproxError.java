@@ -7,10 +7,8 @@ import pl.edu.agh.gg.domain.hyperEdge.HyperEdgeI;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class ElementApproxError {
     private BufferedImage image;
@@ -101,16 +99,37 @@ public class ElementApproxError {
         return new Vertex(new Geom(x, y), getRgb(x, y), Vertex.Label.V);
     }
 
+    private List<Vertex> getRecoveredVertices(List<Vertex> vertices){
+        Vertex va = vertices.get(0);
+        Vertex vb = vertices.get(1);
+
+        int vax = va.getGeom().getX();
+        int vay = va.getGeom().getY();
+        int vbx = vb.getGeom().getX();
+        int vby = vb.getGeom().getY();
+        if (vax == vbx || vay == vby) {
+            throw new CannotCalculateErrorException();
+        }
+
+        Vertex v1 = new Vertex(new Geom(vax, vby), getRgb(vax, vby), Vertex.Label.V);
+        Vertex v2 = new Vertex(new Geom(vbx, vay), getRgb(vbx, vay), Vertex.Label.V);
+        return Arrays.asList(v1, v2);
+    }
+
     private List<Vertex> getVertexList(HyperEdgeI edgeI) {
         // making copy of vertices list to avoid original list modification
         List<Vertex> vertices = new ArrayList<>(edgeI.getConnectedVertices());
-        if (vertices.size() < 3 || vertices.size() > 4) {
+        if (vertices.size() < 2 || vertices.size() > 4) {
             throw new CannotCalculateErrorException();
         }
 
         if (vertices.size() == 3) {
             Vertex v = getRecoveredVertex(vertices);
             vertices.add(v);
+        }
+        else if (vertices.size() == 2) {
+            List<Vertex> v = getRecoveredVertices(vertices);
+            vertices.addAll(v);
         }
 
         vertices.sort((v1, v2) -> {

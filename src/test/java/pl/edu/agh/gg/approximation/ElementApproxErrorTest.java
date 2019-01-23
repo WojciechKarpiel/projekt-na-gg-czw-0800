@@ -112,9 +112,21 @@ public class ElementApproxErrorTest {
         elementApproxErrorToTest.calculateError(i);
     }
 
+    @Test()
+    public void WhenConnectedVerticesIsTwo_DoesNotThrowException() {
+        i.setConnectedVertices(Arrays.asList(v1, v3));
+        elementApproxErrorToTest.calculateError(i);
+    }
+
     @Test(expected = CannotCalculateErrorException.class)
-    public void WhenConnectedVerticesIsTwo_ThrowException() {
+    public void WhenConnectedVerticesIsTwoAdjecent_ThrowException() {
         i.setConnectedVertices(Arrays.asList(v1, v2));
+        elementApproxErrorToTest.calculateError(i);
+    }
+
+    @Test(expected = CannotCalculateErrorException.class)
+    public void WhenConnectedVerticesIsOne_ThrowException() {
+        i.setConnectedVertices(Arrays.asList(v1));
         elementApproxErrorToTest.calculateError(i);
     }
 
