@@ -28,6 +28,7 @@ public class MultipleProductionsTest {
     private P2 p2;
     private P3 p3;
     private P4 p4;
+    private P5 p5;
 
 
     private HyperGraph graph;
@@ -39,6 +40,8 @@ public class MultipleProductionsTest {
         p2 = new P2(new FakeImage(), graph);
         p3 = new P3(new FakeImage(), graph);
         p4 = new P4(new FakeImage(), graph);
+        p5 = new P5(new FakeImage(), graph);
+
 
         HyperEdge s = new HyperEdgeS(Collections.emptyList());
         graph.add(s);
@@ -47,6 +50,9 @@ public class MultipleProductionsTest {
         p1.apply(s);
 
         List<HyperEdgeI> listOfIEdges = getListOfIEdges(graph);
+
+        //produkcja p5
+        p5.apply(listOfIEdges.get(0));
 
         //produkcja p2
         p2.apply(listOfIEdges.get(0));
@@ -58,6 +64,9 @@ public class MultipleProductionsTest {
 
         //znajdz sasiadow wierzcholka w lewym gornym rogu (dla nich nie wykonujemy produkcji)
         Set<VertexLike> neighborsOfTopLeft = Graphs.neighborSetOf(graph, getTopLeftVertex(graph));
+
+        //trzy produkcje p2
+        getListOfIEdges(graph).stream().filter(e -> !neighborsOfTopLeft.contains(e)).forEach(e -> p5.apply(e));
 
         //lista pierwszych czterech krawedzi F
         List<HyperEdgeF> listOfOriginalFEdges = getListOfFEdges(graph);

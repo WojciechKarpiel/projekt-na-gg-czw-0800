@@ -14,7 +14,7 @@ abstract public class HyperEdge extends VertexLike {
     public HyperEdge(EdgeLabel edgeLabel, List<Vertex> connectedVertices) {
         super(EntityType.EDGE);
         this.edgeLabel = edgeLabel;
-        this.connectedVertices = connectedVertices;
+        setConnectedVertices(connectedVertices);
     }
 
     public Geom getGeom() {
@@ -38,11 +38,16 @@ abstract public class HyperEdge extends VertexLike {
     }
 
     public void setConnectedVertices(List<Vertex> connectedVertices) {
+        setVertexParentHyperEdge(connectedVertices);
         this.connectedVertices = connectedVertices;
     }
 
     public enum EdgeLabel {
         S, B, I, F
+    }
+
+    private void setVertexParentHyperEdge(List<Vertex> connectedVertices) {
+        connectedVertices.forEach(vertex -> vertex.getHyperEdges().add(this));
     }
 
     // Nie można robić takiego `equals` bo wtedy doda sie tylko jedna krawędź danego typu :(

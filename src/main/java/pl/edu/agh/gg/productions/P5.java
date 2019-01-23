@@ -31,19 +31,18 @@ public class P5 extends Production {
         }
         hyperEdgeI.setBreak(true);
 
-        propagateBreakForNeighbours(graph, hyperEdgeI);
+        propagateBreakForNeighbours(hyperEdgeI);
     }
 
-    private void propagateBreakForNeighbours(HyperGraph graph, HyperEdgeI smallEdge) {
+    private void propagateBreakForNeighbours(HyperEdgeI smallEdge) {
         int beseEdgeConnectedVertices = smallEdge.getConnectedVertices().size();
         if (beseEdgeConnectedVertices != 3 && beseEdgeConnectedVertices != 2) {
             return;
         }
 
-        List<HyperEdgeI> bigEdges = graph.vertexSet().stream()
+        List<HyperEdgeI> bigEdges = smallEdge.getConnectedVertices().stream()
+                .flatMap(vertex -> vertex.getHyperEdges().stream())
                 // getting all edges of type I
-                .filter(VertexLike::isEdge)
-                .map(v -> v.getAsEdge().get())
                 .filter(e -> e.getEdgeLabel() == HyperEdge.EdgeLabel.I)
                 .map(e -> (HyperEdgeI) e)
                 // excluding edges without one common vertex
@@ -78,13 +77,13 @@ public class P5 extends Production {
                 // excluding edges without F edge between
                 .filter(bigEdge -> {
                     Vertex commonVertex = EdgeUtils.findCommonVertices(bigEdge, smallEdge).stream().findAny().get();
-                    Optional<HyperEdge> any = EdgeUtils.findRelatedFaceEdges(graph, bigEdge, commonVertex).stream().findAny();
+                    Optional<HyperEdge> any = EdgeUtils.findRelatedFaceEdges(bigEdge, commonVertex).stream().findAny();
                     return any.isPresent();
                 }).collect(Collectors.toList());
 
         bigEdges.forEach(possibleEdge -> {
             possibleEdge.setBreak(true);
-            propagateBreakForNeighbours(graph, possibleEdge);
+            propagateBreakForNeighbours(possibleEdge);
         });
     }
 }
